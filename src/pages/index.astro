@@ -1,0 +1,97 @@
+---
+import Layout from '../layouts/Layout.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import FaultCard from '../components/FaultCard.astro';
+import RecoveryAction from '../components/RecoveryAction.astro';
+import ActivityLog from '../components/ActivityLog.astro';
+
+const systemStatus = 'safe';
+const faults = [
+  {
+    type: 'Gas Leak Detected',
+    location: 'Kitchen',
+    severity: 'danger',
+    priority: 0,
+    timestamp: new Date().toISOString()
+  },
+  {
+    type: 'Window Open During Storm',
+    location: 'Living Room',
+    severity: 'warning',
+    priority: 1,
+    timestamp: new Date(Date.now() - 1800000).toISOString()
+  },
+  {
+    type: 'Risky Temperature',
+    location: 'Bedroom',
+    severity: 'warning',
+    priority: 2,
+    timestamp: new Date(Date.now() - 3600000).toISOString()
+  }
+];
+
+const recoveryActions = [
+  {
+    id: '1',
+    title: 'Shut Off Gas Main',
+    description: 'Emergency: Immediately shut off the main gas valve in the utility room',
+    status: 'pending'
+  },
+  {
+    id: '2',
+    title: 'Close Windows',
+    description: 'Close all windows due to incoming storm',
+    status: 'pending'
+  }
+];
+
+const recentLogs = [
+  {
+    timestamp: new Date().toISOString(),
+    type: 'error',
+    message: 'Gas leak detected in Kitchen - Emergency services notified'
+  },
+  {
+    timestamp: new Date(Date.now() - 1800000).toISOString(),
+    type: 'warning',
+    message: 'Storm warning: Windows detected open in Living Room'
+  },
+  {
+    timestamp: new Date(Date.now() - 3600000).toISOString(),
+    type: 'warning',
+    message: 'Temperature in Bedroom exceeded threshold'
+  }
+];
+---
+
+<Layout title="House Safety Monitor">
+  <main class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-100">System Dashboard</h1>
+      <StatusBadge status={systemStatus} />
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <section class="bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4 text-gray-100">Active Faults</h2>
+        <div class="space-y-4">
+          {faults.map(fault => <FaultCard fault={fault} />)}
+        </div>
+      </section>
+
+      <section class="bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4 text-gray-100">Recovery Actions</h2>
+        <div class="space-y-4">
+          {recoveryActions.map(action => <RecoveryAction action={action} />)}
+        </div>
+      </section>
+
+      <section class="bg-gray-800 p-6 rounded-lg shadow-lg md:col-span-2">
+        <h2 class="text-xl font-semibold mb-4 text-gray-100">Recent Activity</h2>
+        <div class="space-y-4">
+          {recentLogs.map(log => <ActivityLog log={log} />)}
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>

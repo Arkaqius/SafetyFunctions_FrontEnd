@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ActivityLog from '../components/ActivityLog.astro';
+
+const logs = [
+  {
+    timestamp: new Date().toISOString(),
+    type: 'warning',
+    message: 'Temperature in Living Room exceeded threshold',
+    category: 'temperature'
+  },
+  {
+    timestamp: new Date(Date.now() - 3600000).toISOString(),
+    type: 'info',
+    message: 'System health check completed',
+    category: 'system'
+  },
+  {
+    timestamp: new Date(Date.now() - 7200000).toISOString(),
+    type: 'info',
+    message: 'Temperature monitoring system initialized',
+    category: 'temperature'
+  },
+  {
+    timestamp: new Date(Date.now() - 10800000).toISOString(),
+    type: 'error',
+    message: 'Failed to connect to bedroom sensor',
+    category: 'sensor'
+  }
+];
+
+const categories = ['all', ...new Set(logs.map(log => log.category))];
+const types = ['all', ...new Set(logs.map(log => log.type))];
+---
+
+<Layout title="System Logs">
+  <main class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-100">System Logs</h1>
+      <div class="flex gap-4">
+        <select
+          id="categoryFilter"
+          class="bg-gray-700 text-gray-100 rounded-md px-3 py-2 text-sm"
+        >
+          {categories.map(category => (
+            <option value={category}>{category.charAt(0).toUpperCase() + category.slice(1)}</option>
+          ))}
+        </select>
+        <select
+          id="typeFilter"
+          class="bg-gray-700 text-gray-100 rounded-md px-3 py-2 text-sm"
+        >
+          {types.map(type => (
+            <option value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <div id="logsList" class="space-y-4">
+        {logs.map(log => <ActivityLog log={log} />)}
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  function filterLogs() {
+    const categoryFilter = document.getElementById('categoryFilter') as HTMLSelectElement;
+    const typeFilter = document.getElementById('typeFilter') as HTMLSelectElement;
+    const logsList = document.getElementById('logsList');
+    const logs = document.querySelectorAll('[data-log]');
+
+    logs.forEach(log => {
+      const logData = JSON.parse(log.getAttribute('data-log') || '{}');
+      const categoryMatch = categoryFilter.value === 'all' || logData.category === categoryFilter.value;
+      const typeMatch = typeFilter.value === 'all' || logData.type === typeFilter.value;
+      
+      log.classList.toggle('hidden', !(categoryMatch && typeMatch));
+    });
+  }
+
+  document.getElementById('categoryFilter')?.addEventListener('change', filterLogs);
+  document.getElementById('typeFilter')?.addEventListener('change', filterLogs);
+</script>

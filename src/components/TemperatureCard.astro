@@ -1,0 +1,79 @@
+---
+interface Props {
+  room: {
+    name: string;
+    currentTemp: number;
+    threshold: number;
+    forecast: number;
+    rateOfChange: number;
+    recoveryAction: {
+      title: string;
+      description: string;
+      status: string;
+    } | null;
+    status: string;
+  };
+}
+
+const { room } = Astro.props;
+
+const statusColors = {
+  normal: 'text-green-400',
+  warning: 'text-yellow-400',
+  danger: 'text-red-400'
+};
+
+const getTrendIcon = (rateOfChange: number) => {
+  if (rateOfChange > 0) return '↗️';
+  if (rateOfChange < 0) return '↘️';
+  return '→';
+};
+
+const formatTemp = (temp: number) => `${temp.toFixed(1)}°C`;
+---
+
+<div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+  <div class="flex justify-between items-start mb-4">
+    <h3 class="text-xl font-semibold">{room.name}</h3>
+    <span class={`${statusColors[room.status]} text-sm font-medium`}>
+      {room.status.toUpperCase()}
+    </span>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div>
+      <p class="text-gray-400">Current</p>
+      <p class="text-2xl font-bold">{formatTemp(room.currentTemp)}</p>
+    </div>
+    <div>
+      <p class="text-gray-400">Threshold</p>
+      <p class="text-2xl font-bold">{formatTemp(room.threshold)}</p>
+    </div>
+  </div>
+
+  <div class="border-t border-gray-700 pt-4 space-y-2">
+    <div class="flex justify-between items-center">
+      <span class="text-gray-400">Rate of Change</span>
+      <span class="font-medium">
+        {getTrendIcon(room.rateOfChange)} {formatTemp(room.rateOfChange)}/hr
+      </span>
+    </div>
+    <div class="flex justify-between items-center">
+      <span class="text-gray-400">Forecast (1hr)</span>
+      <span class="font-medium">{formatTemp(room.forecast)}</span>
+    </div>
+  </div>
+
+  {room.recoveryAction && (
+    <div class="mt-4 border-t border-gray-700 pt-4">
+      <h4 class="text-sm font-medium text-gray-300 mb-2">Recovery Action Needed</h4>
+      <div class="bg-gray-900 p-3 rounded">
+        <p class="font-medium text-sm">{room.recoveryAction.title}</p>
+        <p class="text-sm text-gray-400 mt-1">{room.recoveryAction.description}</p>
+        <span class="inline-block mt-2 px-2 py-1 text-xs font-medium bg-yellow-900/50 text-yellow-200 rounded">
+          {room.recoveryAction.status}
+        </span>
+      </div>
+    </div>
+  )}
+</div>

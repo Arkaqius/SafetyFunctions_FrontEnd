@@ -1,0 +1,51 @@
+---
+interface Props {
+  priority: 0 | 1 | 2 | 3 | 4;
+}
+
+const { priority } = Astro.props;
+
+const priorityConfig = {
+  0: {
+    name: 'Immediate Threat',
+    bgColor: 'bg-[#FF4C4C]',
+    textColor: 'text-white',
+    animation: 'animate-pulse'
+  },
+  1: {
+    name: 'Severe Risk',
+    bgColor: 'bg-[#FF7A4C]',
+    textColor: 'text-white',
+    animation: ''
+  },
+  2: {
+    name: 'Potential Issue',
+    bgColor: 'bg-[#FFB84C]',
+    textColor: 'text-gray-900',
+    animation: ''
+  },
+  3: {
+    name: 'System Advisory',
+    bgColor: 'bg-[#FFF04C]',
+    textColor: 'text-gray-900',
+    animation: ''
+  },
+  4: {
+    name: 'Notice',
+    bgColor: 'bg-[#B0E4FF]',
+    textColor: 'text-gray-900',
+    animation: ''
+  }
+};
+---
+
+<span 
+  class={`
+    inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+    ${priorityConfig[priority].bgColor}
+    ${priorityConfig[priority].textColor}
+    ${priorityConfig[priority].animation}
+  `}
+>
+  {priorityConfig[priority].name}
+</span>

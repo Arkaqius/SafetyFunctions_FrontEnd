@@ -1,0 +1,32 @@
+---
+interface Props {
+  log: {
+    timestamp: string;
+    type: 'info' | 'warning' | 'error';
+    message: string;
+    category: string;
+  };
+}
+
+const { log } = Astro.props;
+
+const typeStyles = {
+  info: 'text-blue-400',
+  warning: 'text-yellow-400',
+  error: 'text-red-400'
+};
+---
+
+<div 
+  class="border-l-4 border-gray-700 pl-4 py-2"
+  data-log={JSON.stringify(log)}
+>
+  <div class="flex items-start justify-between">
+    <div>
+      <span class={`${typeStyles[log.type]} text-sm`}>{log.type.toUpperCase()}</span>
+      <span class="text-gray-400 text-sm ml-2">{new Date(log.timestamp).toLocaleString()}</span>
+    </div>
+    <span class="text-gray-500 text-sm">{log.category}</span>
+  </div>
+  <p class="text-gray-200 mt-1">{log.message}</p>
+</div>

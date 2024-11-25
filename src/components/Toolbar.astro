@@ -1,0 +1,35 @@
+---
+const currentPath = Astro.url.pathname;
+
+const navigation = [
+  { name: 'Dashboard', href: '/' },
+  { name: 'Temperature', href: '/temperature' },
+  { name: 'Logs', href: '/logs' }
+];
+---
+
+<nav class="bg-gray-800 border-b border-gray-700">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <span class="text-cyan-500 font-bold">Safety Monitor</span>
+        </div>
+        <div class="ml-10 flex items-baseline space-x-4">
+          {navigation.map((item) => (
+            <a
+              href={item.href}
+              class={`${
+                currentPath === item.href
+                  ? 'bg-gray-900 text-white'
+                  : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+              } px-3 py-2 rounded-md text-sm font-medium`}
+            >
+              {item.name}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
