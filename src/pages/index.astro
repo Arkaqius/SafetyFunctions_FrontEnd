@@ -5,7 +5,13 @@ import FaultCard from '../components/FaultCard.astro';
 import RecoveryAction from '../components/RecoveryAction.astro';
 import ActivityLog from '../components/ActivityLog.astro';
 
-const systemStatus = 'safe';
+const systemStatus = 
+{ 
+  status: 'danger',
+  systemName: "Arek House",
+  timestamp: Date.now()
+};
+
 const faults = [
   {
     type: 'Gas Leak Detected',
@@ -66,9 +72,12 @@ const recentLogs = [
 
 <Layout title="House Safety Monitor">
   <main class="container mx-auto px-4 py-8">
-    <div class="flex justify-between items-center mb-8">
-      <h1 class="text-3xl font-bold text-gray-100">System Dashboard</h1>
-      <StatusBadge status={systemStatus} />
+    <div class="flex items-center mb-8">
+      <StatusBadge 
+      status={systemStatus.status} 
+      systemName={systemStatus.systemName} 
+      timestamp={new Date(systemStatus.timestamp).toISOString()} 
+      />
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
