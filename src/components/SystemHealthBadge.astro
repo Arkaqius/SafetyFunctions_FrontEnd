@@ -1,0 +1,39 @@
+---
+interface Props {
+  status: 'running' | 'stopped' | 'error';
+}
+
+const { status } = Astro.props;
+
+const statusConfig = {
+  running: {
+    label: 'System Running',
+    bgColor: 'bg-emerald-500',
+    textColor: 'text-white',
+    icon: '⚡'
+  },
+  stopped: {
+    label: 'System Stopped',
+    bgColor: 'bg-gray-500',
+    textColor: 'text-white',
+    icon: '⏸'
+  },
+  error: {
+    label: 'System Error',
+    bgColor: 'bg-red-500',
+    textColor: 'text-white',
+    icon: '⚠'
+  }
+};
+
+const currentStatus = statusConfig[status];
+---
+
+<div class={`
+  ${currentStatus.bgColor} 
+  ${currentStatus.textColor}
+  px-3 py-1 rounded-full text-sm font-medium inline-flex items-center gap-1
+`}>
+  <span>{currentStatus.icon}</span>
+  <span>{currentStatus.label}</span>
+</div>

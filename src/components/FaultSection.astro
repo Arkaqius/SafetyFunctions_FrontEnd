@@ -1,0 +1,47 @@
+---
+import FaultCard from './FaultCard.astro';
+import { groupFaultsBySeverity } from '../utils/faultUtils';
+
+interface Props {
+  faults: Array<{
+    type: string;
+    location: string;
+    severity: string;
+    priority: number;
+    timestamp: string;
+  }>;
+}
+
+const { faults } = Astro.props;
+const groupedFaults = groupFaultsBySeverity(faults);
+
+const severityOrder = ['danger', 'warning', 'info'];
+const severityTitles = {
+  danger: 'Critical Faults',
+  warning: 'Warnings',
+  info: 'Potential Issues'
+};
+---
+
+<div class="space-y-4">
+  {severityOrder.map(severity => (
+    groupedFaults[severity] && (
+      <details class="group" open>
+        <summary class="flex items-center cursor-pointer p-4 bg-gray-800/50 rounded-lg">
+          <h3 class="text-lg font-semibold">{severityTitles[severity]}</h3>
+          <span class="ml-2 text-sm text-gray-400">
+            ({groupedFaults[severity].length})
+          </span>
+          <span class="ml-auto text-gray-400 group-open:rotate-180 transition-transform">
+            ▼
+          </span>
+        </summary>
+        <div class="mt-4 space-y-4 pl-4">
+          {groupedFaults[severity].map(fault => (
+            <FaultCard fault={fault} />
+          ))}
+        </div>
+      </details>
+    )
+  ))}
+</div>

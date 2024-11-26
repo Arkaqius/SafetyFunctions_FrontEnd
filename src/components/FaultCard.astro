@@ -1,17 +1,50 @@
 ---
+import PriorityBadge from './PriorityBadge.astro';
+import { TemperatureChart } from './TemperatureChart';
+
 interface Props {
   fault: {
     type: string;
     location: string;
-    severity: 'warning' | 'danger';
+    severity: string;
+    priority: number;
     timestamp: string;
-    priority: 0 | 1 | 2 | 3 | 4;
+    temperature?: {
+      current: number;
+      threshold: { min: number; max: number };
+      history: { time: string; value: number }[];
+      rateOfChange: number;
+    };
   };
 }
 
-import PriorityBadge from './PriorityBadge.astro';
-
 const { fault } = Astro.props;
+
+const isTemperatureFault = fault.type.toLowerCase().includes('temperature');
+
+const temperatureData = isTemperatureFault && fault.temperature ? {
+  labels: fault.temperature.history.map(h => h.time),
+  datasets: [
+    {
+      label: 'Temperature',
+      data: fault.temperature.history.map(h => h.value),
+      borderColor: 'rgb(6, 182, 212)',
+      tension: 0.1
+    },
+    {
+      label: 'Threshold Max',
+      data: fault.temperature.history.map(() => fault.temperature.threshold.max),
+      borderColor: 'rgba(239, 68, 68, 0.5)',
+      borderDash: [5, 5]
+    },
+    {
+      label: 'Threshold Min',
+      data: fault.temperature.history.map(() => fault.temperature.threshold.min),
+      borderColor: 'rgba(59, 130, 246, 0.5)',
+      borderDash: [5, 5]
+    }
+  ]
+} : null;
 ---
 
 <div class="bg-gray-800/50 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-gray-700">
@@ -26,7 +59,49 @@ const { fault } = Astro.props;
       <p class="text-sm text-gray-400">
         {new Date(fault.timestamp).toLocaleString()}
       </p>
+      {isTemperatureFault && fault.temperature && (
+        <div class="mt-2">
+          <p class="text-sm">
+            Current: <span class="font-medium">{fault.temperature.current}°C</span>
+            <span class="ml-2 text-gray-400">
+              ({fault.temperature.rateOfChange > 0 ? '+' : ''}{fault.temperature.rateOfChange}°C/hr)
+            </span>
+          </p>
+          <p class="text-sm text-gray-400">
+            Threshold: {fault.temperature.threshold.min}°C - {fault.temperature.threshold.max}°C
+          </p>
+        </div>
+      )}
     </div>
-    <PriorityBadge priority={fault.priority} />
+    <div class="flex flex-col items-end gap-2">
+      <PriorityBadge priority={fault.priority} />
+      <button
+        class="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+        onclick="confirmIgnore(event)"
+        data-fault-type={fault.type}
+        data-fault-location={fault.location}
+      >
+        Ignore
+      </button>
+    </div>
   </div>
+  
+  {isTemperatureFault && temperatureData && (
+    <div class="mt-4 h-48">
+      <TemperatureChart client:load chartData={temperatureData} />
+    </div>
+  )}
 </div>
+
+<script>
+function confirmIgnore(event) {
+  const button = event.target;
+  const faultType = button.dataset.faultType;
+  const faultLocation = button.dataset.faultLocation;
+  
+  if (confirm(`Are you sure you want to ignore the "${faultType}" fault in ${faultLocation}?`)) {
+    // Here you would typically make an API call to ignore the fault
+    console.log(`Ignoring fault: ${faultType} in ${faultLocation}`);
+  }
+}
+</script>

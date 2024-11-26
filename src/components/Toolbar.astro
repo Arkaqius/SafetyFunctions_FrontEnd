@@ -1,4 +1,7 @@
 ---
+import SystemStatusBadge from './SystemStatusBadge.astro';
+import SystemHealthBadge from './SystemHealthBadge.astro';
+
 const currentPath = Astro.url.pathname;
 
 const navigation = [
@@ -6,29 +9,51 @@ const navigation = [
   { name: 'Temperature', href: '/temperature' },
   { name: 'Logs', href: '/logs' }
 ];
+
+const faults = [
+  {
+    type: 'Gas Leak Detected',
+    location: 'Kitchen',
+    severity: 'danger',
+    priority: 0,
+    timestamp: new Date().toISOString()
+  },
+  {
+    type: 'Window Open During Storm',
+    location: 'Living Room',
+    severity: 'warning',
+    priority: 1,
+    timestamp: new Date(Date.now() - 1800000).toISOString()
+  }
+];
 ---
 
 <nav class="bg-gray-800 border-b border-gray-700">
   <div class="container mx-auto px-4">
-    <div class="flex items-center justify-between h-16">
-      <div class="flex items-center">
-        <div class="flex-shrink-0">
-          <span class="text-cyan-500 font-bold">Safety Monitor</span>
+    <div class="flex items-center h-16">
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
+          <span class="text-gray-400">Safety Status:</span>
+          <SystemStatusBadge faults={faults} />
         </div>
-        <div class="ml-10 flex items-baseline space-x-4">
-          {navigation.map((item) => (
-            <a
-              href={item.href}
-              class={`${
-                currentPath === item.href
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-              } px-3 py-2 rounded-md text-sm font-medium`}
-            >
-              {item.name}
-            </a>
-          ))}
+        <div class="flex items-center gap-2">
+          <span class="text-gray-400">Health:</span>
+          <SystemHealthBadge status="running" />
         </div>
+      </div>
+      <div class="ml-10 flex items-baseline space-x-4">
+        {navigation.map((item) => (
+          <a
+            href={item.href}
+            class={`${
+              currentPath === item.href
+                ? 'bg-gray-900 text-white'
+                : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+            } px-3 py-2 rounded-md text-sm font-medium`}
+          >
+            {item.name}
+          </a>
+        ))}
       </div>
     </div>
   </div>

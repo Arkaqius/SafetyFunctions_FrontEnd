@@ -1,11 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import StatusBadge from '../components/StatusBadge.astro';
-import FaultCard from '../components/FaultCard.astro';
+import FaultSection from '../components/FaultSection.astro';
 import RecoveryAction from '../components/RecoveryAction.astro';
 import ActivityLog from '../components/ActivityLog.astro';
 
-const systemStatus = 'safe';
 const faults = [
   {
     type: 'Gas Leak Detected',
@@ -35,13 +33,15 @@ const recoveryActions = [
     id: '1',
     title: 'Shut Off Gas Main',
     description: 'Emergency: Immediately shut off the main gas valve in the utility room',
-    status: 'pending'
+    status: 'pending',
+    relatedFault: 'Gas Leak Detected'
   },
   {
     id: '2',
     title: 'Close Windows',
     description: 'Close all windows due to incoming storm',
-    status: 'pending'
+    status: 'pending',
+    relatedFault: 'Window Open During Storm'
   }
 ];
 
@@ -49,49 +49,65 @@ const recentLogs = [
   {
     timestamp: new Date().toISOString(),
     type: 'error',
-    message: 'Gas leak detected in Kitchen - Emergency services notified'
+    message: 'Gas leak detected in Kitchen - Emergency services notified',
+    category: 'safety'
   },
   {
     timestamp: new Date(Date.now() - 1800000).toISOString(),
     type: 'warning',
-    message: 'Storm warning: Windows detected open in Living Room'
+    message: 'Storm warning: Windows detected open in Living Room',
+    category: 'weather'
   },
   {
     timestamp: new Date(Date.now() - 3600000).toISOString(),
     type: 'warning',
-    message: 'Temperature in Bedroom exceeded threshold'
+    message: 'Temperature in Bedroom exceeded threshold',
+    category: 'temperature'
   }
 ];
 ---
 
 <Layout title="House Safety Monitor">
   <main class="container mx-auto px-4 py-8">
-    <div class="flex justify-between items-center mb-8">
-      <h1 class="text-3xl font-bold text-gray-100">System Dashboard</h1>
-      <StatusBadge status={systemStatus} />
+    <div class="text-center mb-12">
+      <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">
+        Home Safety System
+      </h1>
+      <p class="text-xl text-gray-400">Comprehensive Monitoring & Protection</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <section class="bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 class="text-xl font-semibold mb-4 text-gray-100">Active Faults</h2>
-        <div class="space-y-4">
-          {faults.map(fault => <FaultCard fault={fault} />)}
-        </div>
-      </section>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left column: Faults -->
+      <div class="lg:col-span-2">
+        <section class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg shadow-lg border border-gray-700">
+          <h2 class="text-xl font-semibold mb-4 text-gray-100">System Faults</h2>
+          <FaultSection faults={faults} />
+        </section>
+      </div>
 
-      <section class="bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 class="text-xl font-semibold mb-4 text-gray-100">Recovery Actions</h2>
-        <div class="space-y-4">
-          {recoveryActions.map(action => <RecoveryAction action={action} />)}
-        </div>
-      </section>
+      <!-- Right column: Recovery Actions -->
+      <div class="lg:col-span-1">
+        <section class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg shadow-lg border border-gray-700">
+          <h2 class="text-xl font-semibold mb-4 text-gray-100">Recovery Actions</h2>
+          <div class="space-y-4">
+            {recoveryActions.map(action => (
+              <RecoveryAction action={action} />
+            ))}
+          </div>
+        </section>
+      </div>
 
-      <section class="bg-gray-800 p-6 rounded-lg shadow-lg md:col-span-2">
-        <h2 class="text-xl font-semibold mb-4 text-gray-100">Recent Activity</h2>
-        <div class="space-y-4">
-          {recentLogs.map(log => <ActivityLog log={log} />)}
-        </div>
-      </section>
+      <!-- Bottom row: Activity Logs -->
+      <div class="lg:col-span-3">
+        <section class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg shadow-lg border border-gray-700">
+          <h2 class="text-xl font-semibold mb-4 text-gray-100">Recent Activity</h2>
+          <div class="space-y-4">
+            {recentLogs.map(log => (
+              <ActivityLog log={log} />
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   </main>
 </Layout>

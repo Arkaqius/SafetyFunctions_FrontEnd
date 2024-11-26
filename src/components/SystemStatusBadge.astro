@@ -1,0 +1,63 @@
+---
+import { getHighestPriorityFault } from '../utils/faultUtils';
+
+interface Props {
+  faults: Array<{
+    type: string;
+    location: string;
+    severity: string;
+    priority: number;
+    timestamp: string;
+  }>;
+}
+
+const { faults } = Astro.props;
+const highestPriorityFault = getHighestPriorityFault(faults);
+
+const statusConfig = {
+  0: {
+    label: 'Critical Alert',
+    bgColor: 'bg-red-500',
+    textColor: 'text-white',
+    animation: 'animate-pulse'
+  },
+  1: {
+    label: 'High Alert',
+    bgColor: 'bg-orange-500',
+    textColor: 'text-white',
+    animation: ''
+  },
+  2: {
+    label: 'Warning',
+    bgColor: 'bg-yellow-500',
+    textColor: 'text-black',
+    animation: ''
+  },
+  3: {
+    label: 'Caution',
+    bgColor: 'bg-blue-500',
+    textColor: 'text-white',
+    animation: ''
+  },
+  safe: {
+    label: 'System Safe',
+    bgColor: 'bg-green-500',
+    textColor: 'text-white',
+    animation: ''
+  }
+};
+
+const currentStatus = highestPriorityFault 
+  ? statusConfig[highestPriorityFault.priority]
+  : statusConfig.safe;
+---
+
+<div class={`
+  ${currentStatus.bgColor} 
+  ${currentStatus.textColor} 
+  ${currentStatus.animation}
+  px-3 py-1 rounded-full text-sm font-medium inline-flex items-center gap-1
+`}>
+  <span class="w-2 h-2 rounded-full bg-current"></span>
+  <span>{currentStatus.label}</span>
+</div>
