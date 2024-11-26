@@ -19,26 +19,43 @@ const rooms = [
   {
     name: 'Living Room',
     currentTemp: 23,
-    threshold: 25,
+    threshold: { min: 18, max: 25 },
     forecast: 24.5,
     rateOfChange: 0.5,
+    history: [
+      { time: '12:00', value: 20 },
+      { time: '13:00', value: 21 },
+      { time: '14:00', value: 22 },
+      { time: '15:00', value: 24 },
+      { time: '16:00', value: 23 }
+    ],
     recoveryAction: null,
-    status: 'normal'
+    status: 'normal',
+    priority: 1
   },
   {
     name: 'Bedroom',
     currentTemp: 26,
-    threshold: 24,
+    threshold: { min: 18, max: 24 },
     forecast: 27,
     rateOfChange: 0.8,
+    history: [
+      { time: '12:00', value: 25 },
+      { time: '13:00', value: 26 },
+      { time: '14:00', value: 26.5 },
+      { time: '15:00', value: 27 },
+      { time: '16:00', value: 26 }
+    ],
     recoveryAction: {
       title: 'Adjust AC Temperature',
       description: 'Lower AC temperature by 2°C',
       status: 'pending'
     },
-    status: 'warning'
+    status: 'warning',
+    priority: 2
   }
 ];
+
 ---
 
 <Layout title="Temperature Monitor">
