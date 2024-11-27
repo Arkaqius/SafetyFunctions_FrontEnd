@@ -1,0 +1,58 @@
+---
+import type { RoomData } from './types';
+import PriorityBadge from './components/PriorityBadge.astro';
+import TemperatureValue from './components/TemperatureValue.astro';
+import TemperatureChart from './components/TemperatureChart';
+import { formatTemperature, formatRateOfChange } from './utils/formatTemperature';
+
+type Props = RoomData;
+
+const {
+  roomName,
+  currentTemp,
+  tempTrend,
+  rateOfChange,
+  forecastTemp,
+  priority,
+  historyData,
+  minThreshold,
+  maxThreshold
+} = Astro.props;
+
+const formattedCurrentTemp = formatTemperature(currentTemp);
+const formattedRateOfChange = formatRateOfChange(rateOfChange);
+const formattedForecastTemp = formatTemperature(forecastTemp);
+---
+
+<div class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-md">
+  <div class="flex justify-between items-start mb-6">
+    <h2 class="text-2xl font-bold text-gray-100">{roomName}</h2>
+    <PriorityBadge priority={priority} />
+  </div>
+
+  <div class="grid grid-cols-3 gap-4 mb-6">
+    <TemperatureValue
+      label="Current"
+      value={formattedCurrentTemp}
+      trend={tempTrend}
+    />
+    <TemperatureValue
+      label="Rate of Change"
+      value={formattedRateOfChange}
+      showUnit={false}
+    />
+    <TemperatureValue
+      label="Forecast"
+      value={formattedForecastTemp}
+    />
+  </div>
+
+  <div class="h-[200px] mt-4">
+    <TemperatureChart
+      client:load
+      data={historyData}
+      minThreshold={minThreshold}
+      maxThreshold={maxThreshold}
+    />
+  </div>
+</div>

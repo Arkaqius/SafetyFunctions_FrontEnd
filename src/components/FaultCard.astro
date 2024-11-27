@@ -1,6 +1,5 @@
 ---
 import PriorityBadge from './PriorityBadge.astro';
-import { TemperatureChart } from './TemperatureChart';
 
 interface Props {
   fault: {
@@ -85,12 +84,6 @@ const temperatureData = isTemperatureFault && fault.temperature ? {
       </button>
     </div>
   </div>
-  
-  {isTemperatureFault && temperatureData && (
-    <div class="mt-4 h-48">
-      <TemperatureChart client:load chartData={temperatureData} />
-    </div>
-  )}
 </div>
 
 <script>

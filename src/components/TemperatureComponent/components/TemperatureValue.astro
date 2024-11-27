@@ -1,0 +1,38 @@
+---
+import type { TemperatureTrend } from '../types';
+
+interface Props {
+  value: string;
+  label: string;
+  trend?: TemperatureTrend;
+  showUnit?: boolean;
+}
+
+const { value, label, trend, showUnit = true } = Astro.props;
+
+const trendIcons = {
+  up: '↑',
+  down: '↓',
+  stable: '→'
+};
+
+const trendColors = {
+  up: 'text-red-400',
+  down: 'text-blue-400',
+  stable: 'text-gray-400'
+};
+---
+
+<div class="flex flex-col">
+  <span class="text-sm text-gray-400">{label}</span>
+  <div class="flex items-center gap-1">
+    <span class="text-xl font-semibold text-gray-100">
+      {value}{showUnit && '°C'}
+    </span>
+    {trend && (
+      <span class={`${trendColors[trend]}`}>
+        {trendIcons[trend]}
+      </span>
+    )}
+  </div>
+</div>
