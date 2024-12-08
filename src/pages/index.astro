@@ -1,70 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import FaultSection from '../components/FaultSection.astro';
-import RecoveryAction from '../components/RecoveryAction.astro';
-import ActivityLog from '../components/ActivityLog.astro';
-
-const faults = [
-  {
-    type: 'Gas Leak Detected',
-    location: 'Kitchen',
-    severity: 'danger',
-    priority: 0,
-    timestamp: new Date().toISOString()
-  },
-  {
-    type: 'Window Open During Storm',
-    location: 'Living Room',
-    severity: 'warning',
-    priority: 1,
-    timestamp: new Date(Date.now() - 1800000).toISOString()
-  },
-  {
-    type: 'Risky Temperature',
-    location: 'Bedroom',
-    severity: 'warning',
-    priority: 2,
-    timestamp: new Date(Date.now() - 3600000).toISOString()
-  }
-];
-
-const recoveryActions = [
-  {
-    id: '1',
-    title: 'Shut Off Gas Main',
-    description: 'Emergency: Immediately shut off the main gas valve in the utility room',
-    status: 'pending',
-    relatedFault: 'Gas Leak Detected'
-  },
-  {
-    id: '2',
-    title: 'Close Windows',
-    description: 'Close all windows due to incoming storm',
-    status: 'pending',
-    relatedFault: 'Window Open During Storm'
-  }
-];
-
-const recentLogs = [
-  {
-    timestamp: new Date().toISOString(),
-    type: 'error',
-    message: 'Gas leak detected in Kitchen - Emergency services notified',
-    category: 'safety'
-  },
-  {
-    timestamp: new Date(Date.now() - 1800000).toISOString(),
-    type: 'warning',
-    message: 'Storm warning: Windows detected open in Living Room',
-    category: 'weather'
-  },
-  {
-    timestamp: new Date(Date.now() - 3600000).toISOString(),
-    type: 'warning',
-    message: 'Temperature in Bedroom exceeded threshold',
-    category: 'temperature'
-  }
-];
+import StatusMonitor from '../components/StatusMonitor.jsx';
 ---
 
 <Layout title="House Safety Monitor">
@@ -76,38 +12,7 @@ const recentLogs = [
       <p class="text-xl text-gray-400">Comprehensive Monitoring & Protection</p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Left column: Faults -->
-      <div class="lg:col-span-2">
-        <section class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg shadow-lg border border-gray-700">
-          <h2 class="text-xl font-semibold mb-4 text-gray-100">System Faults</h2>
-          <FaultSection faults={faults} />
-        </section>
-      </div>
-
-      <!-- Right column: Recovery Actions -->
-      <div class="lg:col-span-1">
-        <section class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg shadow-lg border border-gray-700">
-          <h2 class="text-xl font-semibold mb-4 text-gray-100">Recovery Actions</h2>
-          <div class="space-y-4">
-            {recoveryActions.map(action => (
-              <RecoveryAction action={action} />
-            ))}
-          </div>
-        </section>
-      </div>
-
-      <!-- Bottom row: Activity Logs -->
-      <div class="lg:col-span-3">
-        <section class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg shadow-lg border border-gray-700">
-          <h2 class="text-xl font-semibold mb-4 text-gray-100">Recent Activity</h2>
-          <div class="space-y-4">
-            {recentLogs.map(log => (
-              <ActivityLog log={log} />
-            ))}
-          </div>
-        </section>
-      </div>
-    </div>
+    <!-- React component loaded on the client -->
+    <StatusMonitor client:only="react" />
   </main>
 </Layout>
